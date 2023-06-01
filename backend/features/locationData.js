@@ -1,26 +1,38 @@
 module.exports = (io) => {
   console.log('locationData.js module loaded.')
 
-  const timer = setInterval(() => {
-
-    const randomLat = Number(process.env.CENTER_LAT) + Math.random() * 0.01;
-    const randomLng = Number(process.env.CENTER_LNG) + Math.random() * 0.01;
-
-    const data = {
-      lat: randomLat,
-      lng: randomLng,
-    };
-
-    io.emit('locationUpdate', data);
-
-  }, 500);
+  let locationData = null;
+  let timeout = null;
 
   io.on('connection', (socket) => {
-    socket.on('locationShare', (data) => {
+    // emit initial location data (could be null)
+    socket.emit('locationUpdate', locationData);
 
-      console.log('locationShare', data);
+    // someone is sharing their location
+    socket.on('locationShare', (data) => {
+      console.log('locationShare event. Data:', data);
+
+      // save the location data with a timestamp
+      locationData = {
+        ...data,
+        timestamp: Date.now(),
+      };
+
+      // clear the timeout if it exists
+      if (timeout) {
+        clearTimeout(timeout);
+      }
+      // set a timeout to clear the location data after 10 minutes
+      timeout = setTimeout(clearLocationData, 10 * 60 * 1000);
 
       io.emit('locationUpdate', data);
     });
   });
 }
+
+// a function that clears the location data if it's older than 10 minutes
+const clearLocationData = () => {
+  console.log('clearing location data. Timestamp:', locationData.timestamp, 'Now:', Date.now());
+
+  locationData = null;
+};
