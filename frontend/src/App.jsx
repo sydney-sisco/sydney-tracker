@@ -4,10 +4,20 @@ import { socket } from './utils/socket'
 import { SocketTest } from './components/SocketTest'
 import { ConnectionState } from './components/ConnectionState'
 import futureLogo from '/future.svg'
-import './App.css'
+// import './App.css'
+import { MapComponent } from './components/MapComponent'
+import Header from './components/Header'
+import Footer from './components/Footer'
+import styles from './App.module.css'
+import BackgroundEffect from './components/BackgroundEffect'
+import {Location} from './components/Location'
+import useGeolocation from './hooks/useGeolocation'
 
 function App() {
-  const [count, setCount] = useState(0)
+
+  const { location, error } = useGeolocation();
+
+  // const { latitude, longitude } = location;
 
   const [isConnected, setIsConnected] = useState(socket.connected);
 
@@ -30,29 +40,14 @@ function App() {
   }, []);
 
   return (
-    <>
-      <div>
-        <a href="https://github.com/sydney-sisco/webapp-template" target="_blank">
-          <img src={futureLogo} className="logo" alt="future logo" />
-        </a>
-      </div>
-      <h1>webapp-template</h1>
-      <p className="read-the-docs">
-        Click on the logo to learn more
-      </p>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <ApiTest />
-      <SocketTest />
-      <ConnectionState isConnected={ isConnected } />
-    </>
-  )
+    <div className={styles.container}>
+      {/* <BackgroundEffect /> */}
+      <Header />
+      <MapComponent />
+      <Footer />
+      <Location />
+    </div>
+  );
 }
 
 export default App
