@@ -1,0 +1,31 @@
+.footer {
+  flex: 0 1 40px;
+  background-color: #0f0f23;
+  padding: 1rem;
+  font-family: "Orbitron", sans-serif;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #a5dff9;
+  text-align: center;
+}
+
+.connected {
+  animation: flashing 1s infinite alternate;
+  color: #00ff00;
+  
+}
+
+.disconnected {
+  animation: flashing 1s infinite alternate;
+  color: #cb0c59;
+}
+
+@keyframes flashing {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0.3;
+  }
+}
