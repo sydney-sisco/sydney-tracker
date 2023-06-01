@@ -1,9 +1,5 @@
 import { useState, useEffect } from 'react'
-import { ApiTest } from './components/ApiTest'
 import { socket } from './utils/socket'
-import { SocketTest } from './components/SocketTest'
-import { ConnectionState } from './components/ConnectionState'
-import futureLogo from '/future.svg'
 // import './App.css'
 import { MapComponent } from './components/MapComponent'
 import Header from './components/Header'
@@ -11,7 +7,7 @@ import Footer from './components/Footer'
 import styles from './App.module.css'
 import BackgroundEffect from './components/BackgroundEffect'
 import Location from './components/Location'
-import { GoogleMap, MarkerF, LoadScript } from '@react-google-maps/api';
+import { LoadScript } from '@react-google-maps/api';
 
 
 function App() {

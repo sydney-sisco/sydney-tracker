@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import { GoogleMap, MarkerF, LoadScript } from '@react-google-maps/api';
+import { useState, useEffect } from 'react';
+import { GoogleMap, MarkerF } from '@react-google-maps/api';
 import dot from '/dot-red.png'
 import styles from './MapComponent.module.css';
-// import {socket} from '../utils/socket'
 
 const containerStyle = {
   width: "100%",
@@ -187,18 +186,34 @@ const mapOptions = {
   disableDefaultUI: true,
 };
 
+
+
 const MapComponent = ({ center }) => {
+
+  const [markerOpacity, setMarkerOpacity] = useState(0.7);
+
+  useEffect(() => {
+    // update marker opacity every 1 second
+    const interval = setInterval(() => {
+      setMarkerOpacity(markerOpacity => (markerOpacity === 0.7 ? 1 : 0.7));
+    }
+    , 1000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   const markerOptions = {
     position: center,
     icon: dot,
+    clickable: false,
+    opacity: markerOpacity,
   };
 
   return (
     <div className={styles.map}>
       <GoogleMap mapContainerStyle={containerStyle} center={center} zoom={zoom} options={mapOptions}>
-        {/* <MarkerF options={markerOptions} /> */}
-        <MarkerF position={center} />
+        <MarkerF options={markerOptions} />
+        {/* <MarkerF position={center} /> */}
       </GoogleMap>
     </div>
   );
