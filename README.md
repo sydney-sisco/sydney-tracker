@@ -1,6 +1,6 @@
 # webapp-template
 
-A starting point.
+An app to find Sydney. Live at [tracker.sydneysisco.com](https://tracker.sydneysisco.com).
 
 Includes:
 - Frontend: React, Vite
