@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import styles from './BackgroundEffect.module.css';
 
 const BackgroundEffect = () => {
   useEffect(() => {
@@ -49,7 +50,7 @@ const BackgroundEffect = () => {
     };
   }, []);
 
-  return <canvas id="cvs" style={{ height: '100%', width: '100vw'}} />;
+  return <canvas id="cvs" className={styles.bg} />;
 };
 
 export default BackgroundEffect;
