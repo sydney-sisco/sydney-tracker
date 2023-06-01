@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { GoogleMap, MarkerF, LoadScript } from '@react-google-maps/api';
 import dot from '/dot-red.png'
 import styles from './MapComponent.module.css';
+import {socket} from '../utils/socket'
 
 const containerStyle = {
   width: "100%",
@@ -189,23 +190,26 @@ const MapComponent = () => {
   });
 
   useEffect(() => {
-    // set a timer to update the center of the map every 5 seconds
-    // const timer = setInterval(() => {
-    //   setCenter({
-    //     lat: Number(import.meta.env.VITE_CENTER_LAT) + Math.random() * 0.01,
-    //     lng: Number(import.meta.env.VITE_CENTER_LNG) + Math.random() * 0.01,
-    //   });
-    // }, 500);
+    function onLocationUpdate(location) {
+
+      console.log(location);
+
+      setCenter({
+        lat: Number(location.lat),
+        lng: Number(location.lng),
+      });
+    };
+
+      console.log(location);
+
+      socket.on('locationUpdate', onLocationUpdate);
 
     return () => {
-      // clearInterval(timer);
+      socket.off('locationUpdate', onLocationUpdate);
     };
   }, []);
 
-  const markerPosition = {
-    lat: Number(import.meta.env.VITE_CENTER_LAT),
-    lng: Number(import.meta.env.VITE_CENTER_LNG),
-  };
+  const markerPosition = center;
 
   const markerOptions = {
     position: center,
