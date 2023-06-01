@@ -11,6 +11,8 @@ import Footer from './components/Footer'
 import styles from './App.module.css'
 import BackgroundEffect from './components/BackgroundEffect'
 import Location from './components/Location'
+import { GoogleMap, MarkerF, LoadScript } from '@react-google-maps/api';
+
 
 function App() {
   const [isConnected, setIsConnected] = useState(socket.connected);
@@ -54,16 +56,14 @@ function App() {
   }, []);
 
   return (
-    <div className={styles.container}>
-      <Header />
-      {center ? <MapComponent center={center} /> :
-        <BackgroundEffect />
-      }
-
-      {/* <MapComponent center={center} /> */}
-      <Footer isConnected={center} />
-      <Location />
-    </div>
+    <LoadScript googleMapsApiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}>
+      <div className={styles.container}>
+        <Header />
+        {center ? <MapComponent center={center} /> : <BackgroundEffect />}
+        <Footer isConnected={center} />
+        <Location />
+      </div>
+    </LoadScript>
   );
 }
 
