@@ -7,9 +7,9 @@ module.exports = (io) => {
   let interval;
 
   const sendLocationUpdate = () => {
-    if (locationData) {
-      io.emit('locationUpdate', locationData);
-    }
+    io.emit('locationUpdate', locationData);
+    // if (locationData) {
+    // }
   };
 
   io.on('connection', (socket) => {
@@ -47,4 +47,13 @@ module.exports = (io) => {
       }
     });
   });
+};
+
+// a function that clears the location data if it's older than 10 minutes
+const clearLocationData = (io) => {
+  console.log('clearing location data. Timestamp:', locationData.timestamp, 'Now:', Date.now());
+
+  locationData = null;
+
+  io.emit('locationUpdate', locationData);
 };
