@@ -1,8 +1,10 @@
+let locationData = null;
+let timeout = null;
+
 module.exports = (io) => {
   console.log('locationData.js module loaded.')
 
-  let locationData = null;
-  let timeout = null;
+
 
   io.on('connection', (socket) => {
     // emit initial location data (could be null)
@@ -23,7 +25,7 @@ module.exports = (io) => {
         clearTimeout(timeout);
       }
       // set a timeout to clear the location data after 10 minutes
-      timeout = setTimeout(clearLocationData, 10 * 60 * 1000);
+      timeout = setTimeout(() => clearLocationData(io), 10 * 60 * 1000);
 
       io.emit('locationUpdate', data);
     });
@@ -31,8 +33,10 @@ module.exports = (io) => {
 }
 
 // a function that clears the location data if it's older than 10 minutes
-const clearLocationData = () => {
+const clearLocationData = (io) => {
   console.log('clearing location data. Timestamp:', locationData.timestamp, 'Now:', Date.now());
 
   locationData = null;
+
+  io.emit('locationUpdate', locationData);
 };
