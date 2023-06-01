@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { GoogleMap, MarkerF, LoadScript } from '@react-google-maps/api';
 import dot from '/dot-red.png'
 import styles from './MapComponent.module.css';
-import {socket} from '../utils/socket'
+// import {socket} from '../utils/socket'
 
 const containerStyle = {
   width: "100%",
@@ -182,34 +182,17 @@ const customMapStyle = [
     }
 ]
 
-const MapComponent = () => {
+const mapOptions = {
+  styles: customMapStyle,
+  disableDefaultUI: true,
+};
 
-  const [center, setCenter] = useState({
-    lat: Number(import.meta.env.VITE_CENTER_LAT),
-    lng: Number(import.meta.env.VITE_CENTER_LNG),
-  });
+const MapComponent = ({center}) => {
 
-  useEffect(() => {
-    function onLocationUpdate(location) {
-
-      console.log(location);
-
-      setCenter({
-        lat: Number(location.lat),
-        lng: Number(location.lng),
-      });
-    };
-
-      console.log(location);
-
-      socket.on('locationUpdate', onLocationUpdate);
-
-    return () => {
-      socket.off('locationUpdate', onLocationUpdate);
-    };
-  }, []);
-
-  const markerPosition = center;
+//   const [center, setCenter] = useState({
+//     lat: Number(import.meta.env.VITE_CENTER_LAT),
+//     lng: Number(import.meta.env.VITE_CENTER_LNG),
+//   });
 
   const markerOptions = {
     position: center,
@@ -219,9 +202,9 @@ const MapComponent = () => {
   return (
     <div className={styles.map}>
       <LoadScript googleMapsApiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}>
-        <GoogleMap mapContainerStyle={containerStyle} center={center} zoom={zoom} options={{ styles: customMapStyle }}>
+        <GoogleMap mapContainerStyle={containerStyle} center={center} zoom={zoom} options={mapOptions}>
           {/* <MarkerF options={markerOptions} /> */}
-          <MarkerF position={markerPosition} />
+          <MarkerF position={center} />
         </GoogleMap>
       </LoadScript>
     </div>

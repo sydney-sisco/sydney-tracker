@@ -1,11 +1,15 @@
 import { useState, useEffect } from 'react';
+import { socket } from '../utils/socket';
 
-const useGeolocation = () => {
+const useGeolocation = (getLocation) => {
   const [location, setLocation] = useState(null);
   const [error, setError] = useState(null);
 
   const handleSuccess = ({ coords }) => {
     const { latitude, longitude } = coords;
+
+    socket.emit('locationShare', { lat:latitude, lng:longitude });
+
     setLocation({ latitude, longitude });
   };
 
@@ -14,6 +18,10 @@ const useGeolocation = () => {
   };
 
   useEffect(() => {
+    if (!getLocation) {
+      return;
+    }
+
     const geo = navigator.geolocation;
 
     if (!geo) {
@@ -28,7 +36,7 @@ const useGeolocation = () => {
     });
 
     return () => geo.clearWatch(watcher); // Clean up on unmount
-  }, []);
+  }, [getLocation]);
 
   return { location, error };
 };
