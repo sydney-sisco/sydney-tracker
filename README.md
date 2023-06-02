@@ -1,4 +1,4 @@
-# webapp-template
+# SydneyTracker
 
 An app to find Sydney. Live at [tracker.sydneysisco.com](https://tracker.sydneysisco.com).
 
@@ -6,14 +6,6 @@ Includes:
 - Frontend: React, Vite
 - Backend: Express, Socket.io
 
-## To Do
-
-Install TailwindCSS. [Instructions](https://tailwindcss.com/docs/guides/vite)
-Add tests to backend:
-https://www.npmjs.com/package/jest
-https://www.npmjs.com/package/supertest
-
-backend debugging with vscode
 
 ## Development
 
@@ -62,12 +54,3 @@ Express. Nodemon for development.
 
 Listens on [port 3001](http://localhost:3001) 
 
-### Backend Dependencies
-
-- express
-- dotenv
-- socket.io
-
-### Dev dependencies
-
-- nodemon
