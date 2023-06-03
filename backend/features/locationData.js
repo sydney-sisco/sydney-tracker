@@ -6,10 +6,9 @@ module.exports = (io) => {
 
   let interval;
 
+  // sending null sets tracker status to "offline"
   const sendLocationUpdate = () => {
     io.emit('locationUpdate', locationData);
-    // if (locationData) {
-    // }
   };
 
   io.on('connection', (socket) => {
@@ -25,11 +24,18 @@ module.exports = (io) => {
     socket.on('locationShare', (data) => {
       console.log('locationShare event. Data:', data);
 
+      const previousLocationData = locationData;
+
       // Save the location data with a timestamp
       locationData = {
         ...data,
         timestamp: Date.now(),
       };
+
+      // If the previous location data was null, send initial location immediately
+      if (!previousLocationData) {
+        sendLocationUpdate();
+      }
 
       // Clear the timeout if it exists
       if (timeout) {
