@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { GoogleMap, MarkerF } from '@react-google-maps/api';
 import dot from '/dot-red.png'
 import styles from './MapComponent.module.css';
+import ShipIcon from './ShipIcon';
 
 const containerStyle = {
   width: "100%",
@@ -188,7 +189,7 @@ const mapOptions = {
 
 
 
-const MapComponent = ({ center }) => {
+const MapComponent = ({ center, ships }) => {
 
   const [markerOpacity, setMarkerOpacity] = useState(0.7);
 
@@ -209,11 +210,33 @@ const MapComponent = ({ center }) => {
     opacity: markerOpacity,
   };
 
+  const seabusMarkers = ships.map(({data}, index) => {
+
+    if (!data) {
+      return null;
+    }
+
+    const icon = {
+      url: ShipIcon(data),
+      scaledSize: new window.google.maps.Size(16, 16),
+    }
+
+    return (
+      <MarkerF
+        key={index}
+        position={{ lat: Number(data.latitude), lng: Number(data.longitude) }}
+        icon={icon}
+        clickable={false}
+      />
+    )
+  });
+
   return (
     <div className={styles.map}>
       <GoogleMap mapContainerStyle={containerStyle} center={center} zoom={zoom} options={mapOptions}>
-        <MarkerF options={markerOptions} />
+        <MarkerF key="sydney" options={markerOptions} />
         {/* <MarkerF position={center} /> */}
+        {seabusMarkers}
       </GoogleMap>
     </div>
   );

@@ -17,6 +17,8 @@ function App() {
     lng: Number(import.meta.env.VITE_CENTER_LNG),
   });
 
+  const [ships, setShips] = useState([]);
+
   useEffect(() => {
     function onConnect() {
       setIsConnected(true);
@@ -41,14 +43,21 @@ function App() {
       });
     };
 
+    function onSeabusUpdate(data) {
+      console.log('seabus', data);
+      setShips(data);
+    }
+
     socket.on('connect', onConnect);
     socket.on('disconnect', onDisconnect);
     socket.on('locationUpdate', onLocationUpdate);
+    socket.on('seabusUpdate', onSeabusUpdate);
 
     return () => {
       socket.off('connect', onConnect);
       socket.off('disconnect', onDisconnect);
       socket.off('locationUpdate', onLocationUpdate);
+      socket.off('seabusUpdate', onSeabusUpdate);
     };
   }, []);
 
@@ -56,7 +65,7 @@ function App() {
     <LoadScript googleMapsApiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}>
       <div className={styles.container}>
         <Header />
-        {center ? <MapComponent center={center} /> : <BackgroundEffect />}
+        {center ? <MapComponent center={center} ships={ships} /> : <BackgroundEffect />}
         <Footer isConnected={center} />
         <Location />
       </div>
