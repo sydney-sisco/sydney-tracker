@@ -33,3 +33,5 @@ const io = require('./utils/socket')(server);
 require('./features/socketPing')(io);
 
 require('./features/locationData')(io);
+
+require('./features/seabus')(io);
