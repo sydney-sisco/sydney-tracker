@@ -7,13 +7,17 @@ module.exports = (io) => {
   let interval;
 
   // sending null sets tracker status to "offline"
-  const sendLocationUpdate = () => {
-    io.emit('locationUpdate', locationData);
+  const sendLocationUpdate = (socket) => {
+    if (socket) {
+      socket.emit('locationUpdate', locationData);
+    } else {
+      io.emit('locationUpdate', locationData);
+    }
   };
 
   io.on('connection', (socket) => {
     // Emit initial location data if available
-    sendLocationUpdate();
+    sendLocationUpdate(socket);
 
     // Start interval if not already started
     if (!interval) {
