@@ -8,6 +8,7 @@ import styles from './App.module.css'
 import BackgroundEffect from './components/BackgroundEffect'
 import Location from './components/Location'
 import { LoadScript } from '@react-google-maps/api';
+import InfoPanel from './components/InfoPanel';
 
 
 function App() {
@@ -65,7 +66,13 @@ function App() {
     <LoadScript googleMapsApiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}>
       <div className={styles.container}>
         <Header />
-        {center ? <MapComponent center={center} ships={ships} /> : <BackgroundEffect />}
+        {center ? 
+          <>
+            <MapComponent center={center} ships={ships} />
+            <InfoPanel center={center} />
+          </>
+          : <BackgroundEffect />
+        }
         <Footer isConnected={center} />
         <Location />
       </div>
