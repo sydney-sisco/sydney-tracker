@@ -5,12 +5,12 @@ const useGeolocation = (getLocation) => {
   const [location, setLocation] = useState(null);
   const [error, setError] = useState(null);
 
-  const handleSuccess = ({ coords }) => {
-    const { latitude, longitude } = coords;
+  const handleSuccess = (position) => {
+    console.log('handleSuccess', position);
 
-    socket.emit('locationShare', { lat:latitude, lng:longitude });
+    socket.emit('locationShare', { lat: position.coords.latitude, lng:position.coords.longitude, speed: position.coords.speed, timestamp: position.timestamp });
 
-    setLocation({ latitude, longitude });
+    setLocation({ lat: position.coords.latitude, lng: position.coords.longitude });
   };
 
   const handleError = (error) => {

@@ -39,8 +39,9 @@ function App() {
       }
 
       setCenter({
-        lat: Number(location.lat),
-        lng: Number(location.lng),
+        lat: location.lat,
+        lng: location.lng,
+        speed: location.speed,
       });
     };
 
