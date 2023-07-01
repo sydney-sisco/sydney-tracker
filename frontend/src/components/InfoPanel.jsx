@@ -29,7 +29,7 @@ function InfoPanel({ center }) {
       </div>
       <div className={styles.speed}>
         <h3>Speed</h3>
-        {center.speed ? <p>{center.speed} km/h</p> : <p>Unknown</p>}
+        {center.speed ? <p>{(center.speed * 3.6).toFixed(2)} km/h</p> : <p>Unknown</p>}
       </div>
       <div className={styles.activity}>
         <h3>Activity</h3>
