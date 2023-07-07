@@ -12,10 +12,10 @@ function ActivityComponent() {
   const toggleRecording = () => {
     if (isRecording) {
       console.log(`Stopped recording activity: ${activity}`);
-      socket.emit('activityStop', activity);
+      socket.emit('activityStop', {activity});
     } else {
       console.log(`Started recording activity: ${activity}`);
-      socket.emit('activityStart', activity);
+      socket.emit('activityStart', {activity});
     }
     setIsRecording(!isRecording);
   }
