@@ -1,9 +1,13 @@
 import { useState, useEffect } from "react";
 import { getUrlParameter } from '../utils/helpers'
 import useGeolocation from '../hooks/useGeolocation'
+import styles from './Location.module.css'
+import ActivityComponent from "./ActivityComponent";
+
+const trackMeQueryParam = getUrlParameter('trackme');
 
 const Location = () => {
-  const trackMeQueryParam = getUrlParameter('trackme');
+  
   const [shouldTrack, setShouldTrack] = useState(trackMeQueryParam === 'yes');
   const { location, error } = useGeolocation(shouldTrack);
   const [wakeLock, setWakeLock] = useState(null);
@@ -35,6 +39,25 @@ const Location = () => {
   }
 
   useEffect(() => {
+    // Function to reacquire wake lock when the page is visible
+    const handleVisibilityChange = async () => {
+      if (document.visibilityState === 'visible') {
+        await requestWakeLock();
+      } else {
+        setWakeLock(null);
+      }
+    };
+
+    // Event listener for visibility change
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    // Clean up event listener
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, []);
+
+  useEffect(() => {
     setShouldTrack(trackMeQueryParam === 'yes');
     if(trackMeQueryParam === 'yes') {
       requestWakeLock();
@@ -51,12 +74,15 @@ const Location = () => {
 
   const { latitude, longitude } = location;
   return (
-    <div>
-      <h3>User Location</h3>
-      <p>Latitude: {latitude}</p>
-      <p>Longitude: {longitude}</p>
-      <p>Tracking: {shouldTrack ? 'Yes' : 'No'}</p>
-      <p>Wake Lock: {wakeLock ? 'Yes' : 'No'}</p>
+    <div className={styles.locationContainer}>
+      <div>
+        <h3>User Location</h3>
+        <p>Latitude: {latitude}</p>
+        <p>Longitude: {longitude}</p>
+        <p>Tracking: {shouldTrack ? 'Yes' : 'No'}</p>
+        <p>Wake Lock: {wakeLock ? 'Yes' : 'No'}</p>
+      </div>
+      <ActivityComponent />
     </div>
   );
 };
