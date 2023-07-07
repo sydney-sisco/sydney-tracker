@@ -16,6 +16,7 @@ function App() {
     lat: Number(import.meta.env.VITE_CENTER_LAT),
     lng: Number(import.meta.env.VITE_CENTER_LNG),
   });
+  const [locations, setLocations] = useState([]);
 
   const [ships, setShips] = useState([]);
 
@@ -41,6 +42,8 @@ function App() {
         lat: Number(location.lat),
         lng: Number(location.lng),
       });
+
+      setLocations(prevLocations => [...prevLocations, location]);
     };
 
     function onSeabusUpdate(data) {
@@ -65,7 +68,7 @@ function App() {
     <LoadScript googleMapsApiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}>
       <div className={styles.container}>
         <Header />
-        {center ? <MapComponent center={center} ships={ships} /> : <BackgroundEffect />}
+        {center ? <MapComponent center={center} ships={ships} locations={locations} /> : <BackgroundEffect />}
         <Footer isConnected={center} />
         <Location />
       </div>

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { GoogleMap, MarkerF } from '@react-google-maps/api';
+import { GoogleMap, MarkerF, Polyline } from '@react-google-maps/api';
 import dot from '/dot-red.png'
 import styles from './MapComponent.module.css';
 import ShipIcon from './ShipIcon';
@@ -189,7 +189,7 @@ const mapOptions = {
 
 
 
-const MapComponent = ({ center, ships }) => {
+const MapComponent = ({ center, ships, locations }) => {
 
   const [markerOpacity, setMarkerOpacity] = useState(0.7);
 
@@ -235,7 +235,18 @@ const MapComponent = ({ center, ships }) => {
     <div className={styles.map}>
       <GoogleMap mapContainerStyle={containerStyle} center={center} zoom={zoom} options={mapOptions}>
         <MarkerF key="sydney" options={markerOptions} />
-        {/* <MarkerF position={center} /> */}
+        <Polyline
+          path={locations.map(location => ({
+            lat: Number(location.lat),
+            lng: Number(location.lng),
+          }))}
+          options={{
+            strokeColor: "#FF0000",
+            strokeOpacity: 1.0,
+            strokeWeight: 2,
+            clickable: false,
+          }}
+        />
         {seabusMarkers}
       </GoogleMap>
     </div>
