@@ -64,10 +64,6 @@ const Location = () => {
     }
   }, [trackMeQueryParam]);
 
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
-
   if (!location) {
     return <div> </div>;
   }
@@ -81,6 +77,7 @@ const Location = () => {
         <p>Longitude: {longitude}</p>
         <p>Tracking: {shouldTrack ? 'Yes' : 'No'}</p>
         <p>Wake Lock: {wakeLock ? 'Yes' : 'No'}</p>
+        {error && <p>Error: {error}</p>}
       </div>
       <ActivityComponent />
     </div>
