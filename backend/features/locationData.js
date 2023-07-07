@@ -1,5 +1,13 @@
+const {storeActivity} = require('../utils/firestore')
+
 let locationData = null;
 let timeout = null;
+let recording = false;
+let activity = null;
+let recordedPoints = [];
+
+const ACTIVITY_START = 'activityStart';
+const ACTIVITY_STOP = 'activityStop';
 
 module.exports = (io) => {
   console.log('locationData.js module loaded.');
@@ -36,6 +44,11 @@ module.exports = (io) => {
         timestamp: Date.now(),
       };
 
+      // Save the location data if recording
+      if (recording) {
+        recordedPoints.push(locationData);
+      }
+
       // If the previous location data was null, send initial location immediately
       if (!previousLocationData) {
         sendLocationUpdate();
@@ -47,6 +60,20 @@ module.exports = (io) => {
       }
       // Set a timeout to clear the location data after 10 minutes
       timeout = setTimeout(() => clearLocationData(io), 10 * 60 * 1000);
+    });
+
+    socket.on(ACTIVITY_START, (data) => {
+      console.log('activityStart event. Data:', data);
+      recordedPoints = [];
+      recording = true;
+      activity = data.activity;
+    });
+
+    socket.on(ACTIVITY_STOP, (data) => {
+      console.log('activityStop event. Data:', data);
+      storeActivity(activity, recordedPoints);
+      recording = false;
+      activity = null;
     });
 
     // Clear interval on disconnect if no clients connected
