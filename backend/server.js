@@ -18,11 +18,17 @@ app.get('/api/test', (req, res) => {
 })
 
 // Serve static files from the public folder
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'public'), {
+  etag: false,
+  lastModified: false,
+}));
 
 // Serve your React app at the root path
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  res.sendFile(path.join(__dirname, 'public', 'index.html'), {
+    etag: false,
+    lastModified: false,
+  });
 });
 
 const server = app.listen(port, () => {
