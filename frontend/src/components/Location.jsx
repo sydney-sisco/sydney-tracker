@@ -7,11 +7,13 @@ import ActivityComponent from "./ActivityComponent";
 const trackMeQueryParam = getUrlParameter('trackme');
 
 const Location = () => {
-  
   const [shouldTrack, setShouldTrack] = useState(trackMeQueryParam === 'yes');
   const { location, error } = useGeolocation(shouldTrack);
   const [wakeLock, setWakeLock] = useState(null);
-  const [errorWakeLock, setErrorWakeLock] = useState(null);
+  const [errorWakeLock, setErrorWakeLock] = useState('');
+
+  // Track if the user explicitly requested the lock so we can safely reacquire it
+  const [isWakeLockDesired, setIsWakeLockDesired] = useState(false);
 
   async function requestWakeLock() {
     setErrorWakeLock('requestWakeLock')
@@ -19,10 +21,11 @@ const Location = () => {
       try {
         const newWakeLock = await navigator.wakeLock.request('screen');
         setWakeLock(newWakeLock);
+        setIsWakeLockDesired(true);
         setErrorWakeLock(null);
         console.log('Screen wake lock acquired:', newWakeLock);
       } catch (err) {
-        setErrorWakeLock(err);
+        setErrorWakeLock(err.message || err.toString());
         console.error(`Failed to acquire screen wake lock: ${err.name}`, err);
       }
     } else {
@@ -31,27 +34,15 @@ const Location = () => {
     }
   }
 
-  async function releaseWakeLock() {
-    if (wakeLock !== null) {
-      try {
-        await wakeLock.release();
-        console.log('Screen wake lock released:', wakeLock);
-        setWakeLock(null);
-      } catch (err) {
-        console.error(`Failed to release screen wake lock: ${err.name}`, err);
-      }
-    }
-  }
-
   useEffect(() => {
-    // Function to reacquire wake lock when the page is visible
+    // Function to reacquire wake lock when the page becomes visible again
     const handleVisibilityChange = async () => {
       setErrorWakeLock('handleVisibilityChange')
       if (document.visibilityState === 'visible') {
-        setErrorWakeLock('requesting')
-        await requestWakeLock();
+        if (isWakeLockDesired) {
+          await requestWakeLock();
+        }
       } else {
-        setErrorWakeLock('requesting else')
         setWakeLock(null);
       }
     };
@@ -63,23 +54,12 @@ const Location = () => {
     return () => {
       document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
-  }, []);
-
-  useEffect(() => {
-    setShouldTrack(trackMeQueryParam === 'yes');
-    if(trackMeQueryParam === 'yes') {
-      setErrorWakeLock('query param yes')
-      requestWakeLock();
-    } else {
-      setErrorWakeLock('query param no')
-    }
-  }, [trackMeQueryParam]);
+  }, [isWakeLockDesired]);
 
   if (!shouldTrack) {
     return <div> </div>;
   }
 
-  // const { latitude, longitude } = location;
   return (
     <div className={styles.locationContainer}>
       <div>
@@ -87,9 +67,19 @@ const Location = () => {
         <p>Latitude: {location?.latitude}</p>
         <p>Longitude: {location?.longitude}</p>
         <p>Tracking: {shouldTrack ? 'Yes' : 'No'}</p>
+        <div style={{ margin: '10px 0' }}>
+          <button
+            onClick={requestWakeLock}
+            disabled={!!wakeLock}
+          >
+            Request Wake Lock
+          </button>
+        </div>
         <p>Wake Lock: {wakeLock ? 'Yes' : 'No'}</p>
         <p>Wake Lock Error: {errorWakeLock}</p>
         {error && <p>Error: {error}</p>}
+
+
       </div>
       <ActivityComponent />
     </div>
